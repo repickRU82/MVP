@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Реестр писем</title>
+  <script src="https://unpkg.com/htmx.org@1.9.12"></script>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 24px; }
+    table { border-collapse: collapse; width: 100%; }
+    th, td { border: 1px solid #ddd; padding: 8px; font-size: 14px; }
+    th { background: #f2f2f2; text-align: left; }
+  </style>
+</head>
+<body>
+  <h1>Реестр писем</h1>
+  <p>Пользователь: {{ user.user_id }} ({{ user.role }})</p>
+
+  <form method="get" action="/ui/registry">
+    <input type="hidden" name="x_user_id" value="{{ user.user_id }}" />
+    <input type="hidden" name="x_user_role" value="{{ user.role }}" />
+    <input type="text" name="q" value="{{ q }}" placeholder="Номер/тема/email" />
+    <button type="submit">Поиск</button>
+  </form>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Номер</th>
+        <th>Тип</th>
+        <th>Тема</th>
+        <th>Отправитель</th>
+        <th>Получатели</th>
+        <th>Статус</th>
+        <th>Ответственный</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for r in records %}
+      <tr>
+        <td>{{ r.registry_number }}</td>
+        <td>{{ r.record_type.value }}</td>
+        <td>{{ r.subject or '' }}</td>
+        <td>{{ r.from_email or '' }}</td>
+        <td>{{ r.to_emails or '' }}</td>
+        <td>{{ r.status_id }}</td>
+        <td>{{ r.responsible_user_id or '' }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</body>
+</html>
